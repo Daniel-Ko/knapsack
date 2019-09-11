@@ -4,9 +4,9 @@ import argparse
 from random import randint
 from itertools import product
 
+Item = nt("Item", ["price", "weight", "n"])
 
 def knapsack_test():
-    Item = nt("Item", ["price", "weight", "n"])
     Value = nt("Value", ["r", "s", "p", "cost", "weight"])
 
     TOTAL_WEIGHT = 100
@@ -33,34 +33,45 @@ def knapsack_test():
 
                 values.append(Value(i, j, k, cost, weight))
 
-def knapsack_01(knapsack_size: int, shop: tuple):
+def knapsack_01(knapsack_size: int, shop: dict):
+    """
+        Params:
+            shop (dict:3-tuple-> int, int, int): (weight, value, n)
+    """
     Item = nt("Item", ["name", "price", "weight", "n"])
     Value = nt("Value", ["cost", "weight"])
 
     TOTAL_WEIGHT = knapsack_size
 
-    #TODO: itertools.product for unknown num of nested loops 
-    
-    for i in range(num_rubies+1):
-        for j in range(num_sapphires+1):
-            for k in range(num_pearls+1):
+    values = []
 
-                cost = i*rubies.price + j*sapphires.price + k*pearls.price
-                weight = i*rubies.weight + j*sapphires.weight + k*pearls.weight
+    n_sizes = (map(range, (item.n+1 for item in shop.values())))
+    # print([a for a in product(range(4), range(2))])
+    print(list(product(*n_sizes)))
+    # for a in product(map(iter(range), n_sizes)):
+    #     print(a)
+    # for i in range(num_rubies+1):
+    #     for j in range(num_sapphires+1):
+    #         for k in range(num_pearls+1):
 
-                print(f"{i}, {j}, {k} : cost={cost}, weight={weight}")
+    #             cost = i*rubies.price + j*sapphires.price + k*pearls.price
+    #             weight = i*rubies.weight + j*sapphires.weight + k*pearls.weight
 
-                # Might not all be the same weight!
-                if weight > 100:
-                    break
+    #             print(f"{i}, {j}, {k} : cost={cost}, weight={weight}")
 
-                values.append(Value(i, j, k, cost, weight))
-print("r, s, p")
-pp = PrettyPrinter()
-print(pp.pprint(values))
+    #             # Might not all be the same weight!
+    #             if weight > 100:
+    #                 break
+
+    #             values.append(Value(i, j, k, cost, weight))
+# print("r, s, p")
+# pp = PrettyPrinter()
+# print(pp.pprint(values))
 
 
-def tester():
-    
 if __name__ == "__main__":
-    tester()
+    knapsack_01(100, {
+        "Ruby": Item(90, 9, 1),
+        "Sapphire": Item(60, 6, 1),
+        "Pearl": Item(145, 14, 1)
+    })
