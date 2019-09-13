@@ -74,18 +74,11 @@ def knapsack_01(knapsack_size: int, items: list):
                     lookup[i - 1][w],
                     lookup[i - 1][w - items[i].weight] + items[i].value,
                 )
-            print(f"{curr_item.name}: {i},{w}")
-            print(
-                f"{lookup[i - 1][w]} vs {lookup[i - 1][w - items[i].weight]} + {items[i].value}"
-            )
-
-    pp = PrettyPrinter()
-    print(pp.pprint(lookup))
 
 
 if __name__ == "__main__":
     Item = nt("Item", ["name", "value", "weight", "n"])
-    knapsack_01(
+    lookup = knapsack_01(
         7,
         [
             Item("Ruby", 1, 1, 1),
@@ -94,4 +87,5 @@ if __name__ == "__main__":
             Item("Diamond", 7, 5, 1),
         ],
     )
-
+    pp = PrettyPrinter()
+    print(pp.pprint(lookup))
