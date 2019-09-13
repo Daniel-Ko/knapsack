@@ -74,6 +74,7 @@ def knapsack_01(knapsack_size: int, items: list):
                     lookup[i - 1][w],
                     lookup[i - 1][w - items[i].weight] + items[i].value,
                 )
+    return lookup
 
 
 if __name__ == "__main__":
@@ -88,4 +89,4 @@ if __name__ == "__main__":
         ],
     )
     pp = PrettyPrinter()
-    print(pp.pprint(lookup))
+    pp.pprint(lookup)
