@@ -52,12 +52,12 @@ def knapsack_01(knapsack_size: int, items: list):
 
     # Fill in our top and left "boundaries" to provide a lookback for the algo:
 
-    #   the 0 column
+    #   0th column
     for i, _ in enumerate(items):
         lookup[i][0] = 0
 
-    #   the 1st item row.
-    #   Easy -- 0 if 1st item weight is under w, otherwise, we just use the value (used once)
+    #   1st item row.
+    #   Easy -- fill with 0 if 1st item weight is under w, otherwise, we just use 1st item's value
     for w in range(total_size):
         lookup[0][w] = items[0].value if items[0].weight <= w else 0
 
@@ -79,7 +79,7 @@ def knapsack_01(knapsack_size: int, items: list):
 
 
 def knapsack_01_BF(knapsack_size: int, items: list):
-    ...
+    print(list(product(range(2) * len(items))))
 
 
 def print_repr(lookup, shop):
@@ -113,5 +113,6 @@ if __name__ == "__main__":
 
     sack_size, shop = tests.gen_rand_test_cases(1)
 
-    lookup = knapsack_01(sack_size, shop)
+    # lookup = knapsack_01(sack_size, shop)
+    lookup = knapsack_01_BF(sack_size, shop)
     print_repr(lookup, shop)
