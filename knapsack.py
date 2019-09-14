@@ -78,6 +78,8 @@ def knapsack_01(knapsack_size: int, items: list):
     return lookup
 
 
+def knapsack_01_BF(knapsack_size: int, items: list):
+    ...
 
 
 def print_repr(lookup, shop):
@@ -93,11 +95,11 @@ def print_repr(lookup, shop):
         print()
 
 
-
 if __name__ == "__main__":
     Item = nt("Item", ["name", "value", "weight", "n"])
 
     tests.run_tests()
+    tests.test0_1_runtime()
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-a", help="run knapsack0-1 DP randomgen")
