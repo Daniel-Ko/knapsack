@@ -1,8 +1,9 @@
 from collections import namedtuple as nt
-from pprint import PrettyPrinter
 import argparse
 from random import randint
 from itertools import product
+
+import tests
 
 Item = nt("Item", ["price", "weight", "n"])
 
@@ -77,16 +78,38 @@ def knapsack_01(knapsack_size: int, items: list):
     return lookup
 
 
+
+
+def print_repr(lookup, shop):
+    """ Haha, a dirty printing method. Just use it. It should work. """
+    print(" " * 20, end="")
+    for w in range(len(lookup[0])):
+        print(f"{w:3}", end=" ")
+    print()
+    for row, item in zip(lookup, shop):
+        print(f"{item.name:8} (${item.value:<3},{item.weight:>3}g)", end="")
+        for cell in row:
+            print(f"{cell:3}", end=" ")
+        print()
+
+
+
 if __name__ == "__main__":
     Item = nt("Item", ["name", "value", "weight", "n"])
-    lookup = knapsack_01(
-        7,
-        [
-            Item("Ruby", 1, 1, 1),
-            Item("Sapphire", 4, 3, 1),
-            Item("Pearl", 5, 4, 1),
-            Item("Diamond", 7, 5, 1),
-        ],
-    )
-    pp = PrettyPrinter()
-    pp.pprint(lookup)
+
+    tests.run_tests()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a", help="run knapsack0-1 DP randomgen")
+    parser.add_argument("-b", help="run knapsack0-1 BF randomgen")
+    parser.add_argument("-c", help="run knapsack0-n DP randomgen")
+    parser.add_argument("-d", help="run knapsack0-n GT randomgen")
+
+    args = parser.parse_args()
+
+    n = 1
+
+    sack_size, shop = tests.gen_rand_test_cases(1)
+
+    lookup = knapsack_01(sack_size, shop)
+    print_repr(lookup, shop)
