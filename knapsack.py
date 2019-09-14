@@ -1,7 +1,7 @@
 from collections import namedtuple as nt
 import argparse
 from random import randint
-from itertools import product
+from itertools import product, accumulate
 
 import tests
 
@@ -79,10 +79,27 @@ def knapsack_01(knapsack_size: int, items: list):
 
 
 def knapsack_01_BF(knapsack_size: int, items: list):
-    print(list(product(range(2) * len(items))))
+    n_ranges = [range(2)] * len(items)
+    combinations = (product(*n_ranges))
+
+    lookup = []
+    max_value = 0
+    max_combo = ()
+
+    for combo in combinations:
+        combo: list = list(combo)
+        lookup.append(combo)
+
+        val = sum((item.value * combo[i] for i, item in enumerate(items)))
+        if max_value < val:
+            max_index = val
+            max_index = combo
+
+    print(lookup)
+    return (max_combo, max_value)
 
 
-def print_repr(lookup, shop):
+def print_dp(lookup, shop):
     """ Haha, a dirty printing method. Just use it. It should work. """
     print(" " * 20, end="")
     for w in range(len(lookup[0])):
@@ -95,11 +112,23 @@ def print_repr(lookup, shop):
         print()
 
 
+def print_bf(lookup, shop):
+    print(" " * 20, end="")
+    for i, item in enumerate(shop):
+        print(f"{item.name:^8}", end=" ")
+    print()
+    for row, item in zip(lookup, shop):
+        print(f"{item.name:8} (${item.value:<3},{item.weight:>3}g)", end="")
+        for cell in row:
+            print(f"{cell:^8}", end=" ")
+        print()
+
+
 if __name__ == "__main__":
     Item = nt("Item", ["name", "value", "weight", "n"])
 
     tests.run_tests()
-    tests.test0_1_runtime()
+    # tests.test0_1_runtime()
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-a", help="run knapsack0-1 DP randomgen")
@@ -115,4 +144,4 @@ if __name__ == "__main__":
 
     # lookup = knapsack_01(sack_size, shop)
     lookup = knapsack_01_BF(sack_size, shop)
-    print_repr(lookup, shop)
+    print_bf(lookup, shop)
