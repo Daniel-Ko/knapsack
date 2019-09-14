@@ -39,7 +39,7 @@ def naive_implementation():
                 values.append(Value(i, j, k, cost, weight))
 
 
-def knapsack_01(knapsack_size: int, items: list):
+def knapsack_01_DF(knapsack_size: int, items: list):
     """
         Params:
             items (3-tuple-> str, int, int, int): (name, weight, value, n)
@@ -79,24 +79,29 @@ def knapsack_01(knapsack_size: int, items: list):
 
 
 def knapsack_01_BF(knapsack_size: int, items: list):
-    n_ranges = [range(2)] * len(items)
-    combinations = (product(*n_ranges))
+    # Have n number of ranges from 0-1
+    n_ranges = [range(1+1)] * len(items)
 
-    lookup = []
+    # Then use itertools.product to make a full cartesian combination table.
+    combinations: tuple(tuple) = (product(*n_ranges))
+
+    # Keep track of the maximum value throughout our n x n table
     max_value = 0
     max_combo = ()
 
+    # The only thing left to do is evaluate whether this particular combination is the best
     for combo in combinations:
-        combo: list = list(combo)
-        lookup.append(combo)
 
-        val = sum((item.value * combo[i] for i, item in enumerate(items)))
-        if max_value < val:
-            max_index = val
-            max_index = combo
+        combo_val = sum((item.value * combo[i]
+                         for i, item in enumerate(items)))
+        combo_weight = sum(
+            (item.weight * combo[i] for i, item in enumerate(items)))
 
-    print(lookup)
-    return (max_combo, max_value)
+        if max_value < combo_val and combo_weight <= knapsack_size:
+            max_value = combo_val
+            max_combo = combo
+
+    return (max_value, max_combo)
 
 
 def print_dp(lookup, shop):
@@ -112,15 +117,15 @@ def print_dp(lookup, shop):
         print()
 
 
-def print_bf(lookup, shop):
-    print(" " * 20, end="")
-    for i, item in enumerate(shop):
-        print(f"{item.name:^8}", end=" ")
+def print_bf(val, combo, shop):
+    print(f"Max Value: ${val^3}", end="")
+    print(" " * 6, end="")
+
+    print(f"Exists", end=" ")
     print()
-    for row, item in zip(lookup, shop):
+    for j, item in enumerate(shop):
         print(f"{item.name:8} (${item.value:<3},{item.weight:>3}g)", end="")
-        for cell in row:
-            print(f"{cell:^8}", end=" ")
+        print(f"{combo[j]:^8}", end=" ")
         print()
 
 
@@ -144,4 +149,6 @@ if __name__ == "__main__":
 
     # lookup = knapsack_01(sack_size, shop)
     lookup = knapsack_01_BF(sack_size, shop)
-    print_bf(lookup, shop)
+    print_bf(*lookup, shop)
+
+    tests.test0_1_runtime(knapsack_01_DF)
