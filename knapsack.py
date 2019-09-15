@@ -1,7 +1,7 @@
 from collections import namedtuple as nt
 import argparse
 from random import randint
-from itertools import product, accumulate
+from itertools import product
 
 import tests
 
@@ -39,7 +39,7 @@ def naive_implementation():
                 values.append(Value(i, j, k, cost, weight))
 
 
-def knapsack_01_DF(knapsack_size: int, items: list):
+def knapsack_01_DP(knapsack_size: int, items: list):
     """
         Params:
             items (3-tuple-> str, int, int, int): (name, weight, value, n)
@@ -82,7 +82,7 @@ def knapsack_01_BF(knapsack_size: int, items: list):
     # Have n number of ranges from 0-1
     n_ranges = [range(1+1)] * len(items)
 
-    # Then use itertools.product to make a full cartesian combination table.
+    # Then use itertools.product to make a full cartesian combination table. Technically O(n^2)
     combinations: tuple(tuple) = (product(*n_ranges))
 
     # Keep track of the maximum value throughout our n x n table
@@ -102,6 +102,47 @@ def knapsack_01_BF(knapsack_size: int, items: list):
             max_combo = combo
 
     return (max_value, max_combo)
+
+
+def knapsack_0n_DP(knapsack_size: int, items: list):
+    """
+        Params:
+            items (3-tuple-> str, int, int, int): (name, weight, value, n)
+    """
+    # Add 1 more because array is 0-based, and we need a zero column
+    total_size = knapsack_size + 1
+
+    # Construct array of size [# of items][knapsack_weight]
+    lookup = [[None for j in range(total_size)] for i in range(len(items))]
+
+    # Fill in our top and left "boundaries" to provide a lookback for the algo:
+
+    #   0th column
+    for i, _ in enumerate(items):
+        lookup[i][0] = 0
+        for w in range(total_size):
+            lookup[i][w] = items[i].value * (w // items[i].weight)
+
+    # Now construct lookup row by row, starting at the [1][1] spot and using our prefilled borders
+    for i in range(1, len(items)):
+        for w in range(1, total_size):
+            curr_item = items[i]
+
+            # Our item is too heavy to add to this subweight, use a prefilled value
+            if curr_item.weight > w:
+                lookup[i][w] = lookup[i - 1][w]
+            else:
+                # Keep the more valuable of what was in the sack before we added this item, or after we added it.
+                lookup[i][w] = max(
+                    lookup[i - 1][w],
+                    lookup[i - 1][w - items[i].weight] + items[i].value,
+                    lookup[i][w]
+                )
+    return lookup
+
+
+def knapsack0n_GT(knapsack_size: int, items: list):
+    ...
 
 
 def print_dp(lookup, shop):
@@ -145,10 +186,9 @@ if __name__ == "__main__":
 
     n = 1
 
-    sack_size, shop = tests.gen_rand_test_cases(1)
+    sack_size, shop = tests.test_case_gen(1)
 
-    # lookup = knapsack_01(sack_size, shop)
-    lookup = knapsack_01_BF(sack_size, shop)
-    print_bf(*lookup, shop)
+    # lookup = knapsack_0n_DP(sack_size, shop)
+    # print_dp(lookup, shop)
 
-    tests.test0_1_runtime(knapsack_01_DF)
+    tests.test0_1_runtime(knapsack_01_BF)

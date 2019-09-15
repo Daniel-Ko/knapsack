@@ -1,17 +1,19 @@
 from collections import namedtuple as nt
 from random import randint
 import time
+from itertools import cycle
+from statistics import mean
 
-from knapsack import knapsack_01_DF, knapsack_01_BF
+from knapsack import knapsack_01_DP, knapsack_01_BF
 
 Item = nt("Item", ["name", "value", "weight", "n"])
 
 
-def gen_rand_test_cases(n):
+def test_case_gen(n=10, w=-1):
     """ A rough test case generator """
 
     # Emerald was my favourite.
-    item_names = (
+    item_names = cycle((
         "Gold",
         "Silver",
         "Crystal",
@@ -21,9 +23,9 @@ def gen_rand_test_cases(n):
         "Diamond",
         "Pearl",
         "Platinum",
-    )
-    sack_size = randint(10, 30)
-    num_items = randint(1, 10)
+    ))
+    sack_size = w if w > -1 else randint(10, 30)
+    num_items = randint(1, n)
 
     item_weight_range = (
         sack_size // num_items,
@@ -31,8 +33,7 @@ def gen_rand_test_cases(n):
     )
 
     shop = [
-        Item(item_names[i], randint(1, 150), randint(*item_weight_range), n)
-        for i in range(num_items)
+        Item(next(item_names), randint(1, 150), randint(*item_weight_range), n) for i in range(num_items)
     ]
 
     return (sack_size, shop)
@@ -47,7 +48,7 @@ def run_tests():
 
 
 def test0_1DF_case1():
-    actual_lookup = knapsack_01_DF(
+    actual_lookup = knapsack_01_DP(
         7,
         [
             Item("Ruby", 1, 1, 1),
@@ -70,7 +71,7 @@ def test0_1DF_case1():
 
 
 def test0_1DF_case2():
-    actual_lookup = knapsack_01_DF(23, [Item("Ruby", 71, 23, 1)])
+    actual_lookup = knapsack_01_DP(23, [Item("Ruby", 71, 23, 1)])
     expected_lookup = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 71]]
     try:
@@ -111,36 +112,35 @@ def test0_1BF_case2():
 
 def test0_1_runtime(algo):
     times = []
-    sack = [Item("Ruby", 1, 1, 1), Item("Sapphire", 4, 3, 1), Item(
-        "Pearl", 5, 4, 1), Item("Diamond", 7, 5, 1)]
-    # 4 x 5000 combinations
-    start1 = time.time()
-    algo(5000, sack)
-    times.append(time.time() - start1)
 
-    # 4 x 10000 combinations
-    start2 = time.time()
-    algo(10000, sack)
-    times.append(time.time() - start2)
+    # 500 x 4 combinations
+    times.append(timetest(algo, test_case_gen(n=50, w=4)))
+    print(time[-1])
+    # 50 x 40 combinations
+    times.append(timetest(algo, test_case_gen(n=5000, w=8)))
+    print(time[-1])
+    # 500 x 16 combinations
+    times.append(timetest(algo, test_case_gen(n=500, w=16)))
+    print(time[-1])
+    # 500 x 32 combinations
+    times.append(timetest(algo, test_case_gen(n=500, w=32)))
 
-    # 4 x 20000 combinations
-    start3 = time.time()
-    algo(20000, sack)
-    times.append(time.time() - start3)
+    # 5000 x 32 combinations
+    times.append(timetest(algo, test_case_gen(n=5000, w=32)))
 
-    # 4 x 40000 combinations
-    start4 = time.time()
-    algo(40000, sack)
-    times.append(time.time() - start4)
+    # 50000 x 100 combinations
+    times.append(timetest(algo, test_case_gen(n=50000, w=100)))
 
-    # 4 x 250000 combinations
-    start5 = time.time()
-    algo(250000, sack)
-    times.append(time.time() - start5)
-
-    # 4 x 1000000 combinations
-    start6 = time.time()
-    algo(1000000, sack)
-    times.append(time.time() - start6)
+    # 50000 x 200 combinations
+    times.append(timetest(algo, test_case_gen(n=50000, w=200)))
 
     print(times)
+
+
+def timetest(algo, test_case):
+    times = []
+    for i in range(3):
+        start = time.time()
+        algo(*test_case)
+        times.append(time.time() - start)
+    return mean(times)
