@@ -115,14 +115,14 @@ def knapsack_0n_DP(knapsack_size: int, items: list):
     # Construct array of size [# of items][knapsack_weight]
     lookup = [[None for j in range(total_size)] for i in range(len(items))]
 
-    # Fill in our top and left "boundaries" to provide a lookback for the algo:
-
-    #   0th column
-    for i, _ in enumerate(items):
+    # Prepopulate table with item value 
+    for i, item in enumerate(items):
         lookup[i][0] = 0
         for w in range(total_size):
-            lookup[i][w] = items[i].value * (w // items[i].weight)
 
+            lookup[i][w] = item.value * min((w // item.weight), item.n)
+    print_dp(lookup, items)
+    print("-----------------------------------------------------")
     # Now construct lookup row by row, starting at the [1][1] spot and using our prefilled borders
     for i in range(1, len(items)):
         for w in range(1, total_size):
@@ -147,12 +147,14 @@ def knapsack0n_GT(knapsack_size: int, items: list):
 
 def print_dp(lookup, shop):
     """ Haha, a dirty printing method. Just use it. It should work. """
-    print(" " * 20, end="")
+    print(f"Max Value: ${lookup[-1][-1]^3}", end="")
+    print(" " * 11, end="")
     for w in range(len(lookup[0])):
-        print(f"{w:3}", end=" ")
+        print(f"{w:>3}", end=" ")
     print()
     for row, item in zip(lookup, shop):
-        print(f"{item.name:8} (${item.value:<3},{item.weight:>3}g)", end="")
+        print(
+            f"{item.name:8} (${item.value:<2},{item.weight:^3}g, n={item.n:<2})", end="")
         for cell in row:
             print(f"{cell:3}", end=" ")
         print()
@@ -184,11 +186,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    n = 1
+    n = 10
 
-    sack_size, shop = tests.test_case_gen(1)
+    sack_size, shop = tests.test_case_gen(n=10)
 
-    # lookup = knapsack_0n_DP(sack_size, shop)
-    # print_dp(lookup, shop)
+    lookup = knapsack_0n_DP(sack_size, shop)
+    print_dp(lookup, shop)
 
-    tests.test0_1_runtime(knapsack_01_BF)
+    # tests.test0_1_runtime(knapsack_01_BF)

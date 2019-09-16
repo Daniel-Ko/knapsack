@@ -9,7 +9,7 @@ from knapsack import knapsack_01_DP, knapsack_01_BF
 Item = nt("Item", ["name", "value", "weight", "n"])
 
 
-def test_case_gen(n=10, w=-1):
+def test_case_gen(num_items=9, w=-1, n=-1):
     """ A rough test case generator """
 
     # Emerald was my favourite.
@@ -25,15 +25,14 @@ def test_case_gen(n=10, w=-1):
         "Platinum",
     ))
     sack_size = w if w > -1 else randint(10, 30)
-    num_items = randint(1, n)
-
+    num_items = randint(1, num_items)
     item_weight_range = (
         sack_size // num_items,
         sack_size // 2 if sack_size // 2 > sack_size // num_items else sack_size,
     )
 
     shop = [
-        Item(next(item_names), randint(1, 150), randint(*item_weight_range), n) for i in range(num_items)
+        Item(next(item_names), randint(1, 50), randint(*item_weight_range), randint(1, n)) for i in range(num_items)
     ]
 
     return (sack_size, shop)
@@ -114,25 +113,25 @@ def test0_1_runtime(algo):
     times = []
 
     # 500 x 4 combinations
-    times.append(timetest(algo, test_case_gen(n=50, w=4)))
+    times.append(timetest(algo, test_case_gen(num_items=50, w=4, n=1)))
     print(time[-1])
     # 50 x 40 combinations
-    times.append(timetest(algo, test_case_gen(n=5000, w=8)))
+    times.append(timetest(algo, test_case_gen(num_items=5000, w=8, n=1)))
     print(time[-1])
     # 500 x 16 combinations
-    times.append(timetest(algo, test_case_gen(n=500, w=16)))
+    times.append(timetest(algo, test_case_gen(num_items=500, w=16, n=1)))
     print(time[-1])
     # 500 x 32 combinations
-    times.append(timetest(algo, test_case_gen(n=500, w=32)))
+    times.append(timetest(algo, test_case_gen(num_items=500, w=32, n=1)))
 
     # 5000 x 32 combinations
-    times.append(timetest(algo, test_case_gen(n=5000, w=32)))
+    times.append(timetest(algo, test_case_gen(num_items=5000, w=32, n=1)))
 
     # 50000 x 100 combinations
-    times.append(timetest(algo, test_case_gen(n=50000, w=100)))
+    times.append(timetest(algo, test_case_gen(num_items=50000, w=100, n=1)))
 
     # 50000 x 200 combinations
-    times.append(timetest(algo, test_case_gen(n=50000, w=200)))
+    times.append(timetest(algo, test_case_gen(num_items=50000, w=200, n=1)))
 
     print(times)
 
