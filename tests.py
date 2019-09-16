@@ -109,29 +109,57 @@ def test0_1BF_case2():
         print(e)
 
 
-def test0_1_runtime(algo):
+def testDP_runtime(algo, n=1):
     times = []
 
     # 500 x 4 combinations
-    times.append(timetest(algo, test_case_gen(num_items=50, w=4, n=1)))
-    print(time[-1])
+    times.append(timetest(algo, test_case_gen(num_items=500, w=4, n=n)))
+
     # 50 x 40 combinations
-    times.append(timetest(algo, test_case_gen(num_items=5000, w=8, n=1)))
-    print(time[-1])
+    times.append(timetest(algo, test_case_gen(num_items=5000, w=8, n=n)))
+
     # 500 x 16 combinations
-    times.append(timetest(algo, test_case_gen(num_items=500, w=16, n=1)))
-    print(time[-1])
+    times.append(timetest(algo, test_case_gen(num_items=500, w=16, n=n)))
+
     # 500 x 32 combinations
-    times.append(timetest(algo, test_case_gen(num_items=500, w=32, n=1)))
+    times.append(timetest(algo, test_case_gen(num_items=500, w=32, n=n)))
 
     # 5000 x 32 combinations
-    times.append(timetest(algo, test_case_gen(num_items=5000, w=32, n=1)))
+    times.append(timetest(algo, test_case_gen(num_items=5000, w=32, n=n)))
 
     # 50000 x 100 combinations
-    times.append(timetest(algo, test_case_gen(num_items=50000, w=100, n=1)))
+    times.append(timetest(algo, test_case_gen(num_items=50000, w=100, n=n)))
 
     # 50000 x 200 combinations
-    times.append(timetest(algo, test_case_gen(num_items=50000, w=200, n=1)))
+    times.append(timetest(algo, test_case_gen(num_items=50000, w=200, n=n)))
+
+    print(times)
+
+
+def testBF_runtime(algo):
+    """ Need small num_item values because brute force is O(2^n)! w does not matter """
+    times = []
+
+    # 2^10 combinations
+    times.append(timetest(algo, test_case_gen(num_items=10, w=10, n=1)))
+
+    # 2^15
+    times.append(timetest(algo, test_case_gen(num_items=15, w=10, n=1)))
+
+    # 2^20
+    times.append(timetest(algo, test_case_gen(num_items=20, w=10, n=1)))
+
+    # 2^25
+    times.append(timetest(algo, test_case_gen(num_items=25, w=32, n=1)))
+
+    # 2^27
+    times.append(timetest(algo, test_case_gen(num_items=27, w=32, n=1)))
+
+    # 2^30
+    times.append(timetest(algo, test_case_gen(num_items=30, w=100, n=1)))
+
+    # 2^32 yikes
+    times.append(timetest(algo, test_case_gen(num_items=32, w=200, n=1)))
 
     print(times)
 

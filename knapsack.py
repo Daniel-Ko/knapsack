@@ -5,39 +5,6 @@ from itertools import product
 
 import tests
 
-Item = nt("Item", ["price", "weight", "n"])
-
-
-def naive_implementation():
-    """ My own go before understanding how others have done it """
-    Value = nt("Value", ["r", "s", "p", "cost", "weight"])
-
-    TOTAL_WEIGHT = 100
-    num_rubies = 1
-    num_sapphires = 1
-    num_pearls = 1
-
-    rubies = Item(90, 9, num_rubies)
-    sapphires = Item(60, 6, num_sapphires)
-    pearls = Item(145, 14, num_pearls)
-
-    values = []
-
-    for i in range(num_rubies + 1):
-        for j in range(num_sapphires + 1):
-            for k in range(num_pearls + 1):
-
-                cost = i * rubies.price + j * sapphires.price + k * pearls.price
-                weight = i * rubies.weight + j * sapphires.weight + k * pearls.weight
-
-                print(f"{i}, {j}, {k} : cost={cost}, weight={weight}")
-
-                # Might not all be the same weight!
-                if weight > 100:
-                    break
-
-                values.append(Value(i, j, k, cost, weight))
-
 
 def knapsack_01_DP(knapsack_size: int, items: list):
     """
@@ -104,7 +71,7 @@ def knapsack_01_BF(knapsack_size: int, items: list):
     return (max_value, max_combo)
 
 
-def knapsack_0n_DP(knapsack_size: int, items: list):
+def knapsack_0N_DP(knapsack_size: int, items: list):
     """
         Params:
             items (3-tuple-> str, int, int, int): (name, weight, value, n)
@@ -115,14 +82,13 @@ def knapsack_0n_DP(knapsack_size: int, items: list):
     # Construct array of size [# of items][knapsack_weight]
     lookup = [[None for j in range(total_size)] for i in range(len(items))]
 
-    # Prepopulate table with item value 
+    # Prepopulate table with item value
     for i, item in enumerate(items):
         lookup[i][0] = 0
         for w in range(total_size):
 
             lookup[i][w] = item.value * min((w // item.weight), item.n)
-    print_dp(lookup, items)
-    print("-----------------------------------------------------")
+
     # Now construct lookup row by row, starting at the [1][1] spot and using our prefilled borders
     for i in range(1, len(items)):
         for w in range(1, total_size):
@@ -141,7 +107,7 @@ def knapsack_0n_DP(knapsack_size: int, items: list):
     return lookup
 
 
-def knapsack0n_GT(knapsack_size: int, items: list):
+def knapsack_0n_GT(knapsack_size: int, items: list):
     ...
 
 
@@ -176,21 +142,31 @@ if __name__ == "__main__":
     Item = nt("Item", ["name", "value", "weight", "n"])
 
     tests.run_tests()
-    # tests.test0_1_runtime()
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-a", help="run knapsack0-1 DP randomgen")
-    parser.add_argument("-b", help="run knapsack0-1 BF randomgen")
-    parser.add_argument("-c", help="run knapsack0-n DP randomgen")
-    parser.add_argument("-d", help="run knapsack0-n GT randomgen")
-
+    parser = argparse.ArgumentParser(
+        description="""
+        1: run knapsack0-1 DP randomgen
+        2: run knapsack0-1 BF randomgen
+        3: run knapsack0-n DP randomgen
+        4: run knapsack0-n GT randomgen
+        """)
+    parser.add_argument("-t", "--trial", type=int, default=0)
     args = parser.parse_args()
 
-    n = 10
+    if args.trial == 1:
+        sack_size, shop = tests.test_case_gen(n=1)
+        print_dp(knapsack_01_DP(sack_size, shop), shop)
+    elif args.trial == 2:
+        sack_size, shop = tests.test_case_gen(n=1)
+        print_bf(*knapsack_01_BF(sack_size, shop), shop)
+    elif args.trial == 3:
+        sack_size, shop = tests.test_case_gen(n=10)
+        print_dp(knapsack_0N_DP(sack_size, shop), shop)
+    elif args.trial == 4:
+        sack_size, shop = tests.test_case_gen(n=10)
+        print(knapsack_0n_GT(sack_size, shop))
 
     sack_size, shop = tests.test_case_gen(n=10)
 
-    lookup = knapsack_0n_DP(sack_size, shop)
+    lookup = knapsack_01_DP(sack_size, shop)
     print_dp(lookup, shop)
-
-    # tests.test0_1_runtime(knapsack_01_BF)
