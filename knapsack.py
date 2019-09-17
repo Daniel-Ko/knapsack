@@ -4,6 +4,7 @@ from random import randint
 from itertools import product
 
 import tests
+import graph_functions
 
 
 def knapsack_01_DP(knapsack_size: int, items: list):
@@ -166,7 +167,14 @@ if __name__ == "__main__":
         sack_size, shop = tests.test_case_gen(n=10)
         print(knapsack_0n_GT(sack_size, shop))
 
-    sack_size, shop = tests.test_case_gen(n=10)
+    # sack_size, shop = tests.test_case_gen(n=10)
 
-    lookup = knapsack_01_DP(sack_size, shop)
-    print_dp(lookup, shop)
+    # lookup = knapsack_01_DP(sack_size, shop)
+    # print_dp(lookup, shop)
+
+    graph_functions.graph_setup(10, [
+        Item("Ruby", 1, 1, 1),
+        Item("Sapphire", 4, 3, 1),
+        Item("Pearl", 5, 4, 1),
+        Item("Diamond", 7, 5, 1),
+    ])
