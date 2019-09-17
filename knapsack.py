@@ -172,9 +172,8 @@ if __name__ == "__main__":
     # lookup = knapsack_01_DP(sack_size, shop)
     # print_dp(lookup, shop)
 
-    graph_functions.graph_setup(10, [
-        Item("Ruby", 1, 1, 1),
-        Item("Sapphire", 4, 3, 1),
-        Item("Pearl", 5, 4, 1),
-        Item("Diamond", 7, 5, 1),
+    graph_functions.knapsack_ON_GT(100, [
+        Item("Ruby", 90, 9, 8),
+        Item("Sapphire", 60, 6, 10),
+        Item("Pearl", 145, 14, 5)
     ])
