@@ -87,8 +87,10 @@ def knapsack_0N_DP(knapsack_size: int, items: list):
     for i, item in enumerate(items):
         lookup[i][0] = 0
         for w in range(total_size):
-
-            lookup[i][w] = item.value * min((w // item.weight), item.n)
+            if w == 0:
+                lookup[i][w] = 0
+            else:
+                lookup[i][w] = item.value * min((w // item.weight), item.n)
 
     # Now construct lookup row by row, starting at the [1][1] spot and using our prefilled borders
     for i in range(1, len(items)):
@@ -165,15 +167,17 @@ if __name__ == "__main__":
         print_dp(knapsack_0N_DP(sack_size, shop), shop)
     elif args.trial == 4:
         sack_size, shop = tests.test_case_gen(n=10)
-        print(knapsack_0n_GT(sack_size, shop))
+        max_node = graph_functions.knapsack_0N_GT(sack_size, shop)
+        print(f'{max_node.combo}: ${max_node.val}, {max_node.weight}g')
 
     # sack_size, shop = tests.test_case_gen(n=10)
 
     # lookup = knapsack_01_DP(sack_size, shop)
     # print_dp(lookup, shop)
 
-    graph_functions.knapsack_ON_GT(100, [
-        Item("Ruby", 90, 9, 8),
-        Item("Sapphire", 60, 6, 10),
-        Item("Pearl", 145, 14, 5)
-    ])
+    tests.testDP_runtime(knapsack_0N_DP)
+    # graph_functions.knapsack_0N_GT(100, [
+    #     Item("Ruby", 90, 9, 8),
+    #     Item("Sapphire", 60, 6, 10),
+    #     Item("Pearl", 145, 14, 5)
+    # ])

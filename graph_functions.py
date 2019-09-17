@@ -1,4 +1,5 @@
 from collections import namedtuple as nt
+from queue import PriorityQueue
 
 Neighbour = nt("Neighbour", ["node", "edgeweight"])
 
@@ -6,14 +7,8 @@ Neighbour = nt("Neighbour", ["node", "edgeweight"])
 class ComboNode:
     def __init__(self, combo, val, weight):
         self.combo = combo
-        self.neighbors = []
         self.val = val
         self.weight = weight
-
-    def edge(v2):
-        if v2 not in neighbours:
-            return False
-        return neighbours[v2]
 
     def __hash__(self):
         return hash(self.combo)
@@ -23,8 +18,8 @@ class ComboNode:
         return self.__hash__() == other.__hash__()
 
 
-def knapsack_ON_GT(W, items):
-    graph = []
+def knapsack_0N_GT(W, items):
+    graph = {}
     start_combo = tuple(0 for _ in items)
 
     start_node = ComboNode(
@@ -36,14 +31,19 @@ def knapsack_ON_GT(W, items):
 
     create_graph(start_node, W, items, graph)
 
-    for node in graph:
-        print(f"{key.combo}: {[c.combo for c in key.neighbors]}")
+    # for node in graph:
+    #     print(f"{node.combo}: {[c.combo for c in graph[node]]}")
+
+    max_node = graph_backtrack(start_node, graph)
+
+    return max_node
 
 
 def create_graph(prevnode: ComboNode, W: int, items: list, graph):
-
     # Generates n children of this combination
     for i in range(len(items)):
+        if prevnode.combo[i] >= items[i].n:
+            continue
 
         child_combo = list(prevnode.combo)
         child_combo[i] += 1
@@ -58,7 +58,7 @@ def create_graph(prevnode: ComboNode, W: int, items: list, graph):
         child_node = ComboNode(child_combo, weight=child_w,
                                val=value(child_combo, items))
 
-        # if new node doesn't already exist
+        # if new node doesn't already exist, make new key and use it from here on
         if child_node not in graph:
             graph[child_node] = []
 
@@ -69,6 +69,19 @@ def create_graph(prevnode: ComboNode, W: int, items: list, graph):
         create_graph(child_node, W, items, graph)
 
 
+def graph_backtrack(start_node, graph):
+    max_node = None
+    max_val = 0
+    for node in graph:
+        # if empty, it is a 'leaf' and a solution
+        if not graph[node]:
+            if node.val > max_val:
+                max_node = node
+                max_val = node.val
+
+    return max_node
+
+
 def weight(combo, items):
     return sum(
         (item.weight * combo[i] for i, item in enumerate(items)))
@@ -77,15 +90,3 @@ def weight(combo, items):
 def value(combo, items):
     return sum((item.value * combo[i]
                 for i, item in enumerate(items)))
-
-
-def hasedge(graph, v1, v2):
-    if v1 in graph:
-        return v2 in graph[v1]
-    return False
-
-
-def neighbours(graph, v):
-    if v in graph:
-        return graph[v]
-    return list()

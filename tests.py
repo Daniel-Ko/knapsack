@@ -24,7 +24,7 @@ def test_case_gen(num_items=9, w=-1, n=-1):
         "Pearl",
         "Platinum",
     ))
-    sack_size = w if w > -1 else randint(10, 30)
+    sack_size = w if w > 0 else randint(10, 30)
     num_items = randint(1, num_items)
     item_weight_range = (
         sack_size // num_items,
@@ -160,6 +160,25 @@ def testBF_runtime(algo):
 
     # 2^32 yikes
     times.append(timetest(algo, test_case_gen(num_items=32, w=200, n=1)))
+
+    print(times)
+
+
+def testGraph_runtime(algo):
+    """ Need small num_item values because brute force is O(2^n)! w does not matter """
+    times = []
+
+    # 2^10 combinations
+    times.append(timetest(algo, test_case_gen(num_items=10, w=10, n=1)))
+
+    # 2^15
+    times.append(timetest(algo, test_case_gen(num_items=15, w=10, n=1)))
+
+    # 2^20
+    times.append(timetest(algo, test_case_gen(num_items=20, w=10, n=1)))
+
+    # 2^25
+    times.append(timetest(algo, test_case_gen(num_items=25, w=32, n=1)))
 
     print(times)
 
