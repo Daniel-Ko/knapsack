@@ -41,7 +41,9 @@ def graph_setup(W, items):
 def knapsack_ON_GT(node: ComboNode, W: int, items: list, graph):
 
     for i in range(len(items)):
+        print(combo[i+1])
         curr_item = items[i]
+        # curr_node = ComboNode(combo[i+1])
 
 
 def weight(combo, items):
