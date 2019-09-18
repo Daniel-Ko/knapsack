@@ -175,7 +175,7 @@ if __name__ == "__main__":
     # lookup = knapsack_01_DP(sack_size, shop)
     # print_dp(lookup, shop)
 
-    tests.testDP_runtime(knapsack_0N_DP)
+    # tests.testDP_runtime(knapsack_0N_DP)
     # graph_functions.knapsack_0N_GT(100, [
     #     Item("Ruby", 90, 9, 8),
     #     Item("Sapphire", 60, 6, 10),

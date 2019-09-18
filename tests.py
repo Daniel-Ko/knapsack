@@ -27,7 +27,7 @@ def test_case_gen(num_items=9, w=-1, n=-1):
     sack_size = w if w > 0 else randint(10, 30)
     num_items = randint(1, num_items)
     item_weight_range = (
-        sack_size // num_items,
+        1,
         sack_size // 2 if sack_size // 2 > sack_size // num_items else sack_size,
     )
 
